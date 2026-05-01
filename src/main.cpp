@@ -23,7 +23,7 @@ void loop() {
   event.update();
 
 
-  switch (event.current)
+  switch (event.button_pressed)
   {
   case UP:
 

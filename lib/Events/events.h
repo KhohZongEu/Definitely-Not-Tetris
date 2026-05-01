@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-enum event_type
+enum button_type
 {
     NONE,
     UP,
@@ -18,7 +18,7 @@ class events
         uint8_t pin_right;
         
     public:
-        event_type current;
+        button_type button_pressed;
 
         events()
         {
@@ -48,23 +48,23 @@ class events
         {
             if (digitalRead(pin_up))
             {
-                current = UP;
+                button_pressed = UP;
             }
             else if (digitalRead(pin_down))
             {
-                current = DOWN;
+                button_pressed = DOWN;
             }
             else if (digitalRead(pin_left))
             {
-                current = LEFT;
+                button_pressed = LEFT;
             }
             else if (digitalRead(pin_right))
             {
-                current = RIGHT;
+                button_pressed = RIGHT;
             }
             else
             {
-                current = NONE;
+                button_pressed = NONE;
             }
         }
 };
