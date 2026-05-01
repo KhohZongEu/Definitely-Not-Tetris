@@ -11,34 +11,51 @@ const int DC =  9;
 const int RST = 8;
 
 TFT TFTscreen = TFT(CS, DC, RST);
-
-
 events event;
 
 void setup() {
   Serial.begin(115200);
-
+  
   event.init();
 }
 
 void loop() {
   event.update();
 
-  if (event.down == true)
+
+  switch (event.current)
   {
-    Serial.println("Down Pressed");
-  }
-  if (event.left == true)
-  {
-    Serial.println("Left Pressed");
-  }
-  if (event.right == true)
-  {
-    Serial.println("Right Pressed");
-  }
-  if (event.up == true)
-  {
+  case UP:
+
     Serial.println("Up Pressed");
+
+    break;
+  case DOWN:
+
+    Serial.println("Down Pressed");
+  
+    break;
+  case LEFT:
+
+    Serial.println("Left Pressed");
+  
+    break;
+  case RIGHT:
+    
+    Serial.println("Right Pressed");
+  
+    break;
+  
+  case NONE:
+    
+  
+    break;
+  
+  default:
+    
+    Serial.println("ERROR: Unknown event");
+
+    break;
   }
   
 }

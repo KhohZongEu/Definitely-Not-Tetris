@@ -1,5 +1,14 @@
 #include <Arduino.h>
 
+enum event_type
+{
+    NONE,
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
 class events
 {
     private:
@@ -7,12 +16,9 @@ class events
         uint8_t pin_down;
         uint8_t pin_left;
         uint8_t pin_right;
-
+        
     public:
-        bool up;
-        bool down;
-        bool left;
-        bool right;
+        event_type current;
 
         events()
         {
@@ -40,9 +46,25 @@ class events
 
         void update()
         {
-            up = digitalRead(pin_up);
-            down = digitalRead(pin_down);
-            left = digitalRead(pin_left);
-            right = digitalRead(pin_right);
+            if (digitalRead(pin_up))
+            {
+                current = UP;
+            }
+            else if (digitalRead(pin_down))
+            {
+                current = DOWN;
+            }
+            else if (digitalRead(pin_left))
+            {
+                current = LEFT;
+            }
+            else if (digitalRead(pin_right))
+            {
+                current = RIGHT;
+            }
+            else
+            {
+                current = NONE;
+            }
         }
 };
