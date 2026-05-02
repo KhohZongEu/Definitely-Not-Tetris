@@ -18,8 +18,8 @@ struct vector_2d
 
 extern TFT SCREEN;
 
-const int SCREEN_WIDTH = SCREEN.width();
-const int SCREEN_HEIGHT = SCREEN.height();
+const int SCREEN_WIDTH = 128;
+const int SCREEN_HEIGHT = 160;
 
 /*
 Defines a transformation matrix
@@ -34,9 +34,7 @@ void render_rect(points_2d points, int width, int height);
 
 void graphics_init();
 
-void move_object(points_2d initial, vector_2d direction);
+void move_object(points_2d &initial, vector_2d direction);
 
-
-void test_screen();
 
 #endif

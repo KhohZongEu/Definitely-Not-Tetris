@@ -23,13 +23,23 @@ void graphics_init()
     SCREEN.fill(255,255,255);
 }
 
-void move_object(points_2d initial, vector_2d direction)
+void move_object(points_2d &initial, vector_2d direction)
 {
-    SCREEN.fill(0, 0, 0);
-    render_rect(initial, 6, 6);
+    if (direction.i != 0 || direction.j != 0)
+    {
+        SCREEN.fill(0, 0, 0);
+        render_rect(initial, 6, 6);
+    }
     
-    initial.x += direction.i;
-    initial.y += direction.j;
+    if (initial.x + direction.i < SCREEN_WIDTH && initial.x + direction.i >= 0)
+    {
+        initial.x += direction.i;
+    }
+    
+    if (initial.y + direction.j < SCREEN_HEIGHT && initial.y + direction.j >= 0)
+    {
+        initial.y += direction.j;
+    }
     
     SCREEN.fill(255, 255, 255);
     render_rect(initial, 6, 6);

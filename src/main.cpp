@@ -41,28 +41,27 @@ void loop() {
     
     Serial.println("Up Pressed");
     
-    direction.j -= 10;
+    direction.j -= 1;
     
     break;
     case DOWN:
     
     Serial.println("Down Pressed");
     
-    direction.j += 10;
+    direction.j += 1;
     
     break;
     case LEFT:
     
     Serial.println("Left Pressed");
     
-    direction.i -= 10;
+    direction.i -= 1;
     
     break;
     case RIGHT:
     
     Serial.println("Right Pressed");
-    
-    direction.i += 10;
+    direction.i += 1;
     
     break;
     
@@ -77,8 +76,6 @@ void loop() {
     
     break;
   }
-  point.x += direction.i;
-  point.y += direction.j;
   
   move_object(point, direction);
 }
