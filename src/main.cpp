@@ -3,7 +3,7 @@
 #include <SPI.h>
 
 #include "events.h"
-#include <Graphics.h>
+#include "graphics.h"
 
 const int CS =  10;
 const int DC =  9;
@@ -77,6 +77,6 @@ void loop() {
     break;
   }
   
-  move_object(point, direction, BLUE);
+  move_rect(point, direction, PURPLE);
 }
 
