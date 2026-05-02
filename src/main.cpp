@@ -77,6 +77,6 @@ void loop() {
     break;
   }
   
-  move_object(point, direction);
+  move_object(point, direction, BLUE);
 }
 
