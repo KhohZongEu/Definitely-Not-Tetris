@@ -1,8 +1,8 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#include <SPI.h>
 #include <TFT.h>
-#include <Arduino.h>
 
 struct points_2d
 {

@@ -1,7 +1,5 @@
 #include <Arduino.h>
 
-#include <SPI.h>
-
 #include "events.h"
 #include "graphics.h"
 
