@@ -1,3 +1,6 @@
+#ifndef EVENTS_H
+#define EVENTS_H
+
 #include <Arduino.h>
 
 enum button_type
@@ -68,3 +71,5 @@ class events
             }
         }
 };
+
+#endif
