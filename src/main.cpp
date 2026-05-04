@@ -2,15 +2,16 @@
 
 #include "events.h"
 #include "graphics.h"
+#include "grid.h"
 
-const int CS =  10;
-const int DC =  9;
-const int RST = 8;
+const uint8_t CS =  10;
+const uint8_t DC =  9;
+const uint8_t RST = 8;
 
 events event;
 TFT SCREEN = TFT(CS, DC, RST);
 points_2d point;
-
+grid_entity grid;
 
 void setup() {
   Serial.begin(115200);
@@ -25,12 +26,14 @@ void setup() {
   event.init();
   point.x = 50;
   point.y = 50;
+
+  grid.render(28,9); 
 }
 
-
 void loop() {
+  grid.render(28,9); 
+  
   event.update();
-
   vector_2d direction = {0,0};
   
   switch (event.button_pressed)
@@ -75,6 +78,6 @@ void loop() {
     break;
   }
   
-  move_rect(point, direction, PURPLE);
+  move_rect(point, direction, COLOUR_GREEN);
 }
 

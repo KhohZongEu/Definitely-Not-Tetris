@@ -23,20 +23,20 @@ struct colours
     uint8_t b;
 };
 
-const colours BLACK = {0, 0, 0};
-const colours WHITE = {0xFF, 0xFF, 0xFF};
-const colours CYAN = {0x00, 0xFF, 0xFF};
-const colours BLUE = {0x00, 0x00, 0xFF};
-const colours ORANGE = {0xFF, 0x63, 0x00};
-const colours YELLOW = {0xFF, 0xFF, 0x00};
-const colours GREEN = {0x00, 0xFF, 0x00};
-const colours RED = {0xFF, 0x00, 0x00};
-const colours PURPLE = {0x4B, 0x00, 0x82};
+const colours COLOUR_BLACK = {0, 0, 0};
+const colours COLOUR_WHITE = {0xFF, 0xFF, 0xFF};
+const colours COLOUR_CYAN = {0x00, 0xFF, 0xFF};
+const colours COLOUR_BLUE = {0x00, 0x00, 0xFF};
+const colours COLOUR_ORANGE = {0xFF, 0x63, 0x00};
+const colours COLOUR_YELLOW = {0xFF, 0xFF, 0x00};
+const colours COLOUR_GREEN = {0x00, 0xFF, 0x00};
+const colours COLOUR_RED = {0xFF, 0x00, 0x00};
+const colours COLOUR_PURPLE = {0x4B, 0x00, 0x82};
 
 extern TFT SCREEN;
 
-const int SCREEN_WIDTH = 128;
-const int SCREEN_HEIGHT = 160;
+const uint8_t SCREEN_WIDTH = 128;
+const uint8_t SCREEN_HEIGHT = 160;
 
 /*
 Defines a transformation matrix

@@ -22,8 +22,9 @@ void render_line(points_2d start, points_2d end, const colours &colour)
     points_2d actual_start = transform(start);
     points_2d actual_end = transform(end);
     
-    SCREEN.fill(colour.b, colour.g, colour.r);
+    SCREEN.stroke(colour.b, colour.g, colour.r);
     SCREEN.line(actual_start.x, actual_start.y, actual_end.x, actual_end.y);
+    SCREEN.noStroke();
 }
 
 void graphics_init()
@@ -31,14 +32,14 @@ void graphics_init()
     SCREEN.begin();
     SCREEN.noStroke();
     SCREEN.background(0, 0, 0);
-    SCREEN.fill(BLACK.r, BLACK.g, BLACK.b);
+    SCREEN.fill(COLOUR_BLACK.r, COLOUR_BLACK.g, COLOUR_BLACK.b);
 }
 
 void move_rect(points_2d &initial, vector_2d direction, const colours &colour)
 {
     if (direction.i != 0 || direction.j != 0)
     {
-        render_rect(initial, 6, 6, BLACK);
+        render_rect(initial, 6, 6, COLOUR_BLACK);
     }
     
     if (initial.x + direction.i < SCREEN_WIDTH && initial.x + direction.i >= 0)
@@ -52,9 +53,4 @@ void move_rect(points_2d &initial, vector_2d direction, const colours &colour)
     }
     
     render_rect(initial, 6, 6, colour);
-}
-
-void render_grid(uint8_t x_offset)
-{
-
 }
