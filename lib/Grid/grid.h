@@ -54,15 +54,25 @@ class grid_entity
         {
             for (uint8_t i = 0; i <= MAX_CELLS_Y; i++)
             {
-                points_2d start = {offset.x + 0, offset.y + (i * (CELL_SIZE + LINE_WIDTH))};
-                points_2d end = {offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH)), offset.y + (i * (CELL_SIZE + LINE_WIDTH))};
+                points_2d start;
+                start.x = offset.x + 0;
+                start.y = offset.y + (i * (CELL_SIZE + LINE_WIDTH));
                 
+                points_2d end;
+                end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
+                end.y =  offset.y + (i * (CELL_SIZE + LINE_WIDTH));
+
                 render_line(start, end, COLOUR_WHITE);
             }
             for (uint8_t i = 0; i <= MAX_CELLS_X; i++)
             {
-                points_2d start = {offset.x + (i * (CELL_SIZE + LINE_WIDTH)), offset.y + 0};
-                points_2d end = {offset.x + (i * (CELL_SIZE + LINE_WIDTH)), offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH))};
+                points_2d start;
+                start.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
+                start.y = offset.y + 0;
+                
+                points_2d end;
+                end.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
+                end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
                 
                 render_line(start, end, COLOUR_WHITE);
             }
