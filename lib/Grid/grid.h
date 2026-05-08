@@ -9,6 +9,9 @@ extern const uint8_t SCREEN_HEIGHT;
 
 const uint8_t MAX_CELLS_X = 10;
 const uint8_t MAX_CELLS_Y = 20;
+const uint8_t CELL_SIZE = 6;
+const uint8_t LINE_WIDTH = 1;
+
 
 enum grid_states
 {
@@ -26,9 +29,12 @@ class grid_entity
 {
     private:
         grid_states grid[MAX_CELLS_X][MAX_CELLS_Y];
+        points_2d offset;
+        uint8_t width;
+        uint8_t height;
         
     public:
-        grid_entity()
+        grid_entity(uint8_t x_offset=0, uint8_t y_offset=0)
         {
             for (uint8_t i = 0; i < MAX_CELLS_X; i++)
             {
@@ -37,21 +43,26 @@ class grid_entity
                     grid[i][j] = BLACK;
                 }
             }
+            offset.x = x_offset;
+            offset.y = y_offset;
+
+            width = MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH);
+            height = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
         }
         
-        void render(uint8_t x_offset=0, uint8_t y_offset=0)
+        void render()
         {
             for (uint8_t i = 0; i <= MAX_CELLS_Y; i++)
             {
-                points_2d start = {x_offset + 0, y_offset + (i * 7)};
-                points_2d end = {x_offset + (MAX_CELLS_X * 7), y_offset + (i * 7)};
+                points_2d start = {offset.x + 0, offset.y + (i * (CELL_SIZE + LINE_WIDTH))};
+                points_2d end = {offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH)), offset.y + (i * (CELL_SIZE + LINE_WIDTH))};
                 
                 render_line(start, end, COLOUR_WHITE);
             }
             for (uint8_t i = 0; i <= MAX_CELLS_X; i++)
             {
-                points_2d start = {x_offset + (i * 7), y_offset + 0};
-                points_2d end = {x_offset + (i * 7), y_offset + (MAX_CELLS_Y * 7)};
+                points_2d start = {offset.x + (i * (CELL_SIZE + LINE_WIDTH)), offset.y + 0};
+                points_2d end = {offset.x + (i * (CELL_SIZE + LINE_WIDTH)), offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH))};
                 
                 render_line(start, end, COLOUR_WHITE);
             }
@@ -59,13 +70,52 @@ class grid_entity
 
         bool occupied(points_2d point)
         {
-            if (grid[(uint8_t) point.x][(uint8_t) point.y] != BLACK )
+            if (grid[point.x][point.y] != BLACK )
             {
                 return true;
             }
             else
             {
                 return false;
+            }
+        }
+
+        bool within_bounds(points_2d point)
+        {
+            if (within_bounds_x(point.x) == false)
+            {
+                return false;
+            }
+            
+            if (within_bounds_y(point.y) == false)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
+        bool within_bounds_x(uint8_t x)
+        {
+            if (x > offset.x + width || x < offset.x)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        bool within_bounds_y(uint8_t y)
+        {
+            if (y > offset.y + height || y < offset.y)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 };

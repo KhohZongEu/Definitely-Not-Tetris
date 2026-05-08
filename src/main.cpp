@@ -11,7 +11,7 @@ const uint8_t RST = 8;
 events event;
 TFT SCREEN = TFT(CS, DC, RST);
 points_2d point;
-grid_entity grid;
+grid_entity grid(28,9);
 
 void setup() {
   Serial.begin(115200);
@@ -27,11 +27,10 @@ void setup() {
   point.x = 50;
   point.y = 50;
 
-  grid.render(28,9); 
+  grid.render();
 }
 
-void loop() {
-  grid.render(28,9); 
+void loop() { 
   
   event.update();
   vector_2d direction = {0,0};
