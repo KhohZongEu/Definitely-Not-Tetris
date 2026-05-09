@@ -35,11 +35,11 @@ void graphics_init()
     SCREEN.fill(COLOUR_BLACK.r, COLOUR_BLACK.g, COLOUR_BLACK.b);
 }
 
-void move_rect(points_2d &initial, vector_2d direction, const colours &colour)
+void move_rect(points_2d &initial, vector_2d direction, const colours &colour, uint8_t cell_size)
 {
     if (direction.i != 0 || direction.j != 0)
     {
-        render_rect(initial, 6, 6, COLOUR_BLACK);
+        render_rect(initial, cell_size, cell_size, COLOUR_BLACK);
     }
     
     if (initial.x + direction.i < SCREEN_WIDTH && initial.x + direction.i >= 0)
@@ -52,5 +52,5 @@ void move_rect(points_2d &initial, vector_2d direction, const colours &colour)
         initial.y += direction.j;
     }
     
-    render_rect(initial, 6, 6, colour);
+    render_rect(initial, cell_size, cell_size, colour);
 }
