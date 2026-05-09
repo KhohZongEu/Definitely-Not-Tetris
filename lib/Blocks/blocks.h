@@ -160,7 +160,7 @@ class blocks_entity
                     {
                         points_2d point;
                         point.x = coordinates.x + i * (CELL_SIZE + LINE_WIDTH);
-                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH);
+                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH) + CELL_SIZE;
                         render_rect(point, CELL_SIZE, CELL_SIZE, colour);
                     }
                 }

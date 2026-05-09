@@ -36,6 +36,10 @@ void setup() {
 
   grid.render();
   block.render();
+
+  SCREEN.stroke(0, 255, 0);
+  SCREEN.point(150,30);
+  SCREEN.noStroke();
 }
 
 void loop() { 
