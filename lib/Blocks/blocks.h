@@ -166,7 +166,7 @@ class blocks_entity
                     {
                         points_2d point;
                         point.x = coordinates.x + i * (CELL_SIZE + LINE_WIDTH);
-                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH) + CELL_SIZE; // The + CELL_SIZE is needed at the index is not the same
+                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH); // The + CELL_SIZE is needed at the index is not the same
                         render_rect(point, CELL_SIZE, CELL_SIZE, colour);
                     }
                 }
@@ -183,7 +183,7 @@ class blocks_entity
                     {
                         points_2d point;
                         point.x = coordinates.x + i * (CELL_SIZE + LINE_WIDTH);
-                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH) + CELL_SIZE; // The + CELL_SIZE is needed at the index is not the same
+                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH);
                         render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
                     }
                 }

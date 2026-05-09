@@ -11,8 +11,9 @@ points_2d transform(points_2d points)
 
 void render_rect(points_2d points, int width, int height, const colours &colour)
 {
+    points.y += height; // The + CELL_SIZE is needed at the index is not the same
     points_2d actual_points = transform(points);
-    
+
     SCREEN.fill(colour.b, colour.g, colour.r);
     SCREEN.rect(actual_points.x, actual_points.y, height, width);
 }
