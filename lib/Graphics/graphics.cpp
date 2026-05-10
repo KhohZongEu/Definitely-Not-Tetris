@@ -3,8 +3,8 @@
 points_2d transform(points_2d points)
 {
     points_2d new_point;
-    new_point.x = TRANSFORM_MATRIX[0].i * points.x + TRANSFORM_MATRIX[1].i * points.y + 160;
-    new_point.y = TRANSFORM_MATRIX[0].j * points.x + TRANSFORM_MATRIX[1].j * points.y;
+    new_point.x = SCREEN_ROTATION_MATRIX[0].i * points.x + SCREEN_ROTATION_MATRIX[1].i * points.y + 160;
+    new_point.y = SCREEN_ROTATION_MATRIX[0].j * points.x + SCREEN_ROTATION_MATRIX[1].j * points.y;
 
     return new_point;
 }

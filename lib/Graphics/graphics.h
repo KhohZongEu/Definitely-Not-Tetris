@@ -43,7 +43,7 @@ Defines a transformation matrix
 | 0  -1 |
 | 1   0 |
 */
-const vector_2d TRANSFORM_MATRIX[2] = {{0, 1}, {-1, 0}};
+const vector_2d SCREEN_ROTATION_MATRIX[2] = {{0, 1}, {-1, 0}};
 
 points_2d transform(points_2d points);
 
