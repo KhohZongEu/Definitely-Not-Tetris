@@ -101,11 +101,11 @@ class blocks_entity
             rotation = NEUTRAL_ROTATE;
             this->shape = shape;
             this->colour = colour;
-            for (int i = 0; i < HIT_BOX_SIZE; i++)
+            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (int j = 0; j < HIT_BOX_SIZE; j++)
+                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
                 {
-                    this->hit_box[i][j] = hit_box[i][j];
+                    this->hit_box[row][col] = hit_box[row][col];
                 }
             }
         }
@@ -119,71 +119,130 @@ class blocks_entity
 
         void move_right(grid_entity &grid)
         {
-            if (grid.within_bounds_x(coordinates.x + 4 * (CELL_SIZE + LINE_WIDTH)) == false)
+            points_2d checker;
+            checker.x = coordinates.x + 1;
+            checker.y = coordinates.y;
+
+            if (grid.occupied(checker))
             {
                 return;
             }
-            replace();
-            coordinates.x += CELL_SIZE + LINE_WIDTH;
-            // vector_2d direction = {CELL_SIZE + LINE_WIDTH, 0};
-            // move_rect(coordinates, direction, colour, CELL_SIZE);
-            render();
+            if (grid.within_bounds_x(coordinates.x + HIT_BOX_SIZE + 1) == true)
+            {
+                replace(grid);
+                coordinates.x += 1;
+                render(grid);
+                return;
+            }
+            uint8_t current_last_column = MAX_CELLS_X - coordinates.x - 1;
+
+            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
+            {
+                if (hit_box[row][current_last_column] != BLACK)
+                {
+                    return;
+                }
+            }
+            replace(grid);
+            coordinates.x += 1;
+            render(grid);
         }
         
         void move_left(grid_entity &grid)
         {
-            if (grid.within_bounds_x(coordinates.x - (CELL_SIZE + LINE_WIDTH)) == false)
+            points_2d checker;
+            checker.x = coordinates.x -1;
+            checker.y = coordinates.y;
+            if (grid.occupied(checker))
             {
                 return;
             }
-            replace();
-            coordinates.x -= CELL_SIZE + LINE_WIDTH;
-            render();
-            // vector_2d direction = {-(CELL_SIZE + LINE_WIDTH), 0};
-            // move_rect(coordinates, direction, colour, CELL_SIZE);
+
+            if (coordinates.x > 0)
+            {
+                replace(grid);
+                coordinates.x -= 1;
+                render(grid);
+                return;
+            }
+        }
+
+        bool move_down(grid_entity &grid)
+        {
+            points_2d checker;
+            checker.x = coordinates.x;
+            checker.y = coordinates.y - 1;
+            if (grid.occupied(checker))
+            {
+                return false;
+            }
+
+            if (grid.within_bounds_y(coordinates.y + HIT_BOX_SIZE + 1) == true)
+            {
+                replace(grid);
+                coordinates.y += 1;
+                render(grid);
+                return true;
+            }
+
+            int current_last_row = MAX_CELLS_Y - coordinates.y - 1;
+
+            for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
+            {
+                if (hit_box[current_last_row][col] != BLACK)
+                {
+                    return false;
+                }
+            }
+
+            replace(grid);
+            coordinates.y += 1;
+            render(grid);
+
+            return true;
         }
 
         void update_type(box_shapes shape, colours colour, const grid_states hit_box[HIT_BOX_SIZE][HIT_BOX_SIZE])
         {
             this->shape = shape;
             this->colour = colour;
-            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t j = 0; j < HIT_BOX_SIZE; j++)
+                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
                 {
-                    this->hit_box[i][j] = hit_box[i][j];
+                    this->hit_box[row][col] = hit_box[row][col];
                 }
             }
         }
 
-        void render()
+        void render(grid_entity &grid)
         {
-            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t j = 0; j < HIT_BOX_SIZE; j++)
+                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
                 {
-                    if (hit_box[j][i] != BLACK)
+                    if (hit_box[row][col] != BLACK)
                     {
                         points_2d point;
-                        point.x = coordinates.x + i * (CELL_SIZE + LINE_WIDTH);
-                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH); // The + CELL_SIZE is needed at the index is not the same
+                        point.x = grid.offset.x + (coordinates.x + col) * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
+                        point.y = grid.offset.y + (coordinates.y + row) * (CELL_SIZE + LINE_WIDTH);
                         render_rect(point, CELL_SIZE, CELL_SIZE, colour);
                     }
                 }
             }
         }
 
-        void replace()
+        void replace(grid_entity &grid)
         {
-            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t j = 0; j < HIT_BOX_SIZE; j++)
+                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
                 {
-                    if (hit_box[j][i] != BLACK)
+                    if (hit_box[row][col] != BLACK)
                     {
                         points_2d point;
-                        point.x = coordinates.x + i * (CELL_SIZE + LINE_WIDTH);
-                        point.y = coordinates.y + j * (CELL_SIZE + LINE_WIDTH);
+                        point.x = grid.offset.x + (coordinates.x + col) * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
+                        point.y = grid.offset.y + (coordinates.y + row) * (CELL_SIZE + LINE_WIDTH);
                         render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
                     }
                 }

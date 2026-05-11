@@ -29,11 +29,11 @@ class grid_entity
 {
     private:
         grid_states grid[MAX_CELLS_X][MAX_CELLS_Y];
-        points_2d offset;
         uint8_t width;
         uint8_t height;
         
     public:
+        points_2d offset;
         grid_entity(uint8_t x_offset=0, uint8_t y_offset=0)
         {
             for (uint8_t i = 0; i < MAX_CELLS_X; i++)
@@ -107,7 +107,7 @@ class grid_entity
         
         bool within_bounds_x(uint8_t x)
         {
-            if (x > offset.x + width || x < offset.x)
+            if (x > MAX_CELLS_X || x < 0)
             {
                 return false;
             }
@@ -119,7 +119,7 @@ class grid_entity
 
         bool within_bounds_y(uint8_t y)
         {
-            if (y > offset.y + height || y < offset.y)
+            if (y > MAX_CELLS_Y || y < 0)
             {
                 return false;
             }

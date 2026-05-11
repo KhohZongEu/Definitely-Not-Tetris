@@ -11,13 +11,18 @@ const uint8_t RST = 8;
 
 const uint8_t GRID_OFFSET_X = 29;
 const uint8_t GRID_OFFSET_Y = 10;
-
-events event;
 TFT SCREEN = TFT(CS, DC, RST);
-grid_entity grid(GRID_OFFSET_X,GRID_OFFSET_Y);
-blocks_entity block;
+
+const unsigned long DOWN_DELAY = 200;
+const unsigned long SIDE_DELAY = 50;
 
 void setup() {
+  events event;
+  grid_entity grid(GRID_OFFSET_X,GRID_OFFSET_Y);
+
+  unsigned long last_down_movement = 0;
+  unsigned long last_side_movement = 0;
+
   Serial.begin(115200);
 
   graphics_init();
@@ -29,56 +34,61 @@ void setup() {
   
   event.init();
 
-  block.update_type(LSHAPE, COLOUR_ORANGE, L_BLOCK_HIT_BOX);
-
-  block.coordinates.x = GRID_OFFSET_X + LINE_WIDTH;
-  block.coordinates.y = GRID_OFFSET_Y;
+  blocks_entity block = random_block();
 
   grid.render();
-  block.render();
+  block.render(grid);
+
+  while (true)
+  {
+    event.update();
+
+    if (millis() - last_side_movement > SIDE_DELAY)
+    {
+      switch (event.button_pressed)
+      {
+        case UP:
+        Serial.println("Up Pressed");
+        
+        break;
+        case DOWN:
+        Serial.println("Down Pressed");
+        
+        break;
+        case LEFT:
+        Serial.println("Left Pressed");
+        block.move_left(grid);
+        
+        break;
+        case RIGHT:
+        Serial.println("Right Pressed");
+        block.move_right(grid);
+        
+        break;
+        case NONE:
+        
+        break;
+        
+        default:
+        
+        Serial.println("ERROR: Unknown event");
+        
+        break;
+      }
+
+      last_side_movement = millis();
+    }
+
+    if (millis() - last_down_movement > DOWN_DELAY)
+    {
+      block.move_down(grid);
+      last_down_movement = millis();
+    }
+
+  }
 }
 
-void loop() { 
-  
-  event.update();
-  
-  switch (event.button_pressed)
-  {
-    case UP:
-    
-    Serial.println("Up Pressed");
-    
-    break;
-    case DOWN:
-    
-    Serial.println("Down Pressed");
-    
-    break;
-    case LEFT:
-    
-    Serial.println("Left Pressed");
-    block.move_left(grid);
-    
-    
-    break;
-    case RIGHT:
-    
-    Serial.println("Right Pressed");
-    block.move_right(grid);
-    
-    break;
-    
-    case NONE:
-    
-    
-    break;
-    
-    default:
-    
-    Serial.println("ERROR: Unknown event");
-    
-    break;
-  }
+void loop() {
   
 }
 
