@@ -26,74 +26,85 @@ enum rotation_states
     RIGHT_ROTATE
 };
 
-const grid_states S_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { BLACK, GREEN, GREEN, BLACK},
-    { GREEN, GREEN, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK}
+const points_2d S_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {0, 1}, {1, 0}, {1, 1}, {2, 0}
 };
-  
-const grid_states I_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { CYAN, CYAN, CYAN, CYAN},
-    { BLACK, BLACK, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK}
-};
+const points_2d S_BLOCK_MID = {1,1};
 
-const grid_states T_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { BLACK, PURPLE, BLACK, BLACK},
-    { PURPLE, PURPLE, PURPLE, BLACK},
-    { BLACK, BLACK, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK}
-};
 
-const grid_states Z_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { RED, RED, BLACK, BLACK},
-    { BLACK, RED, RED, BLACK},
-    { BLACK, BLACK, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK}
+const points_2d I_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {0, 1}, {1, 1}, {2, 1}, {3, 1}
 };
+const points_2d I_BLOCK_MID = {3,3};
 
-const grid_states J_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { BLACK, BLUE, BLACK, BLACK},
-    { BLACK, BLUE, BLACK, BLACK},
-    { BLACK, BLUE, BLACK, BLACK},
-    { BLUE, BLUE, BLACK, BLACK}
+const points_2d T_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {0, 1}, {1, 1}, {1, 0}, {2, 1}
 };
+const points_2d T_BLOCK_MID = {1,1};
 
-const grid_states O_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { YELLOW, YELLOW, BLACK, BLACK},
-    { YELLOW, YELLOW, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK},
-    { BLACK, BLACK, BLACK, BLACK}
+const points_2d Z_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {0, 0}, {1, 0}, {1, 1}, {2, 1}
 };
+const points_2d Z_BLOCK_MID = {1,1};
 
-const grid_states L_BLOCK_HIT_BOX[HIT_BOX_SIZE][HIT_BOX_SIZE] = 
-{
-    { ORANGE, BLACK, BLACK, BLACK},
-    { ORANGE, BLACK, BLACK, BLACK},
-    { ORANGE, BLACK, BLACK, BLACK},
-    { ORANGE, ORANGE, BLACK, BLACK}
+const points_2d J_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {0, 0}, {0, 1}, {1, 1}, {2, 1}
 };
+const points_2d J_BLOCK_MID = {1,1};
+
+const points_2d O_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {1, 0}, {2, 0}, {1, 1}, {2, 1}
+};
+const points_2d O_BLOCK_MID = {2,1};
+
+const points_2d L_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
+    {0, 1}, {1, 1}, {2, 1}, {2, 0}
+};
+const points_2d L_BLOCK_MID = {1,1};
+
+/*
+Defines a transformation matrix
+| 0  -1 |
+| 1   0 |
+*/
+const vector_2d ROTATION_MATRIX_90[2] = {{0, 1}, {-1, 0}};
 
 class blocks_entity
 {
     private:
         box_shapes shape;
         colours colour;
+        rotation_states rotation;
+        points_2d middle;
+        points_2d hit_box[HIT_BOX_SIZE];
+
+        points_2d calculate_rotation(points_2d input)
+        {
+            points_2d output;
+            if (shape == ISHAPE)
+            {
+                input.x *= 2;
+                input.y *= 2;
+            }
+            
+            output.x = ROTATION_MATRIX_90[0].i * (input.x - middle.x) + ROTATION_MATRIX_90[1].i * (input.y - middle.y);
+            output.y = ROTATION_MATRIX_90[0].j * (input.x - middle.x) + ROTATION_MATRIX_90[1].j * (input.y - middle.y);
+            output.x += middle.x;
+            output.y += middle.y; 
+            
+            if (shape == ISHAPE)
+            {
+                output.x /= 2;
+                output.y /= 2;
+            }
+            
+            return output;
+        }
     
     public:
         points_2d coordinates;
-        rotation_states rotation;
-        grid_states hit_box[HIT_BOX_SIZE][HIT_BOX_SIZE];
         
-        blocks_entity(box_shapes shape, colours colour, const grid_states hit_box[HIT_BOX_SIZE][HIT_BOX_SIZE])
+        blocks_entity(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
             coordinates.x = 0;
             coordinates.y = 0;
@@ -101,12 +112,11 @@ class blocks_entity
             rotation = NEUTRAL_ROTATE;
             this->shape = shape;
             this->colour = colour;
-            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
+            middle = mid;
+
+            for (int row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
-                {
-                    this->hit_box[row][col] = hit_box[row][col];
-                }
+                this->hit_box[row] = hit_box[row];
             }
         }
 
@@ -117,32 +127,80 @@ class blocks_entity
             rotation = NEUTRAL_ROTATE;
         }
 
+        void rotate(grid_entity &grid)
+        {
+            if (shape == OSHAPE)
+            {
+                return;
+            }
+
+            switch (rotation)
+            {
+            case NEUTRAL_ROTATE:
+                replace(grid);
+                for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+                {
+                    hit_box[i] = calculate_rotation(hit_box[i]);
+                }
+                render(grid);
+                rotation = LEFT_ROTATE; 
+                
+            break;
+            case LEFT_ROTATE:
+                replace(grid);
+                for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+                {
+                    hit_box[i] = calculate_rotation(hit_box[i]);
+                }
+                render(grid);
+
+                rotation = INVERT_ROTATE;
+            break;
+            case INVERT_ROTATE:
+                replace(grid);
+                for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+                {
+                    hit_box[i] = calculate_rotation(hit_box[i]);
+                }
+                render(grid);
+                
+                rotation = RIGHT_ROTATE;
+            break;
+            case RIGHT_ROTATE:
+                replace(grid);
+                for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+                {
+                    hit_box[i] = calculate_rotation(hit_box[i]);
+                }
+                render(grid);
+                rotation = NEUTRAL_ROTATE;
+
+            break;
+            
+            default:
+                break;
+            }
+        }
+
         void move_right(grid_entity &grid)
         {
-            points_2d checker;
-            checker.x = coordinates.x + 1;
-            checker.y = coordinates.y;
+            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+            {
 
-            if (grid.occupied(checker))
-            {
-                return;
-            }
-            if (grid.within_bounds_x(coordinates.x + HIT_BOX_SIZE + 1) == true)
-            {
-                replace(grid);
-                coordinates.x += 1;
-                render(grid);
-                return;
-            }
-            uint8_t current_last_column = MAX_CELLS_X - coordinates.x - 1;
-
-            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
-            {
-                if (hit_box[row][current_last_column] != BLACK)
+                points_2d checker;
+                checker.x = coordinates.x + hit_box[i].x + 1;
+                checker.y = coordinates.y + hit_box[i].y;
+                
+                if (grid.occupied(checker))
+                {
+                    return;
+                }
+                if (grid.within_bounds(checker) == false)
                 {
                     return;
                 }
             }
+                
             replace(grid);
             coordinates.x += 1;
             render(grid);
@@ -150,46 +208,41 @@ class blocks_entity
         
         void move_left(grid_entity &grid)
         {
-            points_2d checker;
-            checker.x = coordinates.x -1;
-            checker.y = coordinates.y;
-            if (grid.occupied(checker))
+            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
             {
-                return;
-            }
+                points_2d checker;
+                checker.x = coordinates.x + hit_box[i].x - 1;
+                checker.y = coordinates.y + hit_box[i].y;
 
-            if (coordinates.x > 0)
-            {
-                replace(grid);
-                coordinates.x -= 1;
-                render(grid);
-                return;
+                if (grid.occupied(checker))
+                {
+                    return;
+                }
+                if (grid.within_bounds(checker) == false)
+                {
+                    return;
+                }
             }
+            
+            replace(grid);
+            coordinates.x -= 1;
+            render(grid);
+            return;
         }
 
         bool move_down(grid_entity &grid)
         {
-            points_2d checker;
-            checker.x = coordinates.x;
-            checker.y = coordinates.y - 1;
-            if (grid.occupied(checker))
+            for (int i = 0; i < HIT_BOX_SIZE; i++)
             {
-                return false;
-            }
+                points_2d checker;
+                checker.x = coordinates.x + hit_box[i].x;
+                checker.y = coordinates.y + hit_box[i].y + 1;
 
-            if (grid.within_bounds_y(coordinates.y + HIT_BOX_SIZE + 1) == true)
-            {
-                replace(grid);
-                coordinates.y += 1;
-                render(grid);
-                return true;
-            }
-
-            int current_last_row = MAX_CELLS_Y - coordinates.y - 1;
-
-            for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
-            {
-                if (hit_box[current_last_row][col] != BLACK)
+                if (grid.occupied(checker))
+                {
+                    return false;
+                }
+                if (grid.within_bounds(checker) == false)
                 {
                     return false;
                 }
@@ -202,16 +255,14 @@ class blocks_entity
             return true;
         }
 
-        void update_type(box_shapes shape, colours colour, const grid_states hit_box[HIT_BOX_SIZE][HIT_BOX_SIZE])
+        void update_type(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
             this->shape = shape;
             this->colour = colour;
+            middle = mid;
             for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
-                {
-                    this->hit_box[row][col] = hit_box[row][col];
-                }
+                this->hit_box[row] = hit_box[row];
             }
         }
 
@@ -219,16 +270,10 @@ class blocks_entity
         {
             for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
-                {
-                    if (hit_box[row][col] != BLACK)
-                    {
-                        points_2d point;
-                        point.x = grid.offset.x + (coordinates.x + col) * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
-                        point.y = grid.offset.y + (coordinates.y + row) * (CELL_SIZE + LINE_WIDTH);
-                        render_rect(point, CELL_SIZE, CELL_SIZE, colour);
-                    }
-                }
+                points_2d point;
+                point.x = grid.offset.x + (coordinates.x + hit_box[row].x) * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
+                point.y = grid.offset.y + (coordinates.y + hit_box[row].y) * (CELL_SIZE + LINE_WIDTH);
+                render_rect(point, CELL_SIZE, CELL_SIZE, colour);
             }
         }
 
@@ -236,17 +281,12 @@ class blocks_entity
         {
             for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
-                for (uint8_t col = 0; col < HIT_BOX_SIZE; col++)
-                {
-                    if (hit_box[row][col] != BLACK)
-                    {
-                        points_2d point;
-                        point.x = grid.offset.x + (coordinates.x + col) * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
-                        point.y = grid.offset.y + (coordinates.y + row) * (CELL_SIZE + LINE_WIDTH);
-                        render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
-                    }
-                }
+                points_2d point;
+                point.x = grid.offset.x + (coordinates.x + hit_box[row].x) * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
+                point.y = grid.offset.y + (coordinates.y + hit_box[row].y) * (CELL_SIZE + LINE_WIDTH);
+                render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
             }
+
         }
 };
 

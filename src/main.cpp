@@ -14,7 +14,7 @@ const uint8_t GRID_OFFSET_Y = 10;
 TFT SCREEN = TFT(CS, DC, RST);
 
 const unsigned long DOWN_DELAY = 200;
-const unsigned long SIDE_DELAY = 50;
+const unsigned long SIDE_DELAY = 100;
 
 void setup() {
   events event;
@@ -31,6 +31,7 @@ void setup() {
   Serial.println(SCREEN_WIDTH);
   Serial.print("Height: ");
   Serial.println(SCREEN_HEIGHT);
+
   
   event.init();
 
@@ -43,40 +44,49 @@ void setup() {
   {
     event.update();
 
-    if (millis() - last_side_movement > SIDE_DELAY)
+    switch (event.button_pressed)
     {
-      switch (event.button_pressed)
+    case UP:
+      Serial.println("Up Pressed");
+      
+    break;
+    case DOWN:
+      Serial.println("Down Pressed");
+      if (millis() - last_side_movement > SIDE_DELAY)
       {
-        case UP:
-        Serial.println("Up Pressed");
-        
-        break;
-        case DOWN:
-        Serial.println("Down Pressed");
-        
-        break;
-        case LEFT:
-        Serial.println("Left Pressed");
-        block.move_left(grid);
-        
-        break;
-        case RIGHT:
-        Serial.println("Right Pressed");
-        block.move_right(grid);
-        
-        break;
-        case NONE:
-        
-        break;
-        
-        default:
-        
-        Serial.println("ERROR: Unknown event");
-        
-        break;
+        block.rotate(grid);
+        last_side_movement = millis();
       }
+      
+    break;
+    case LEFT:
+      Serial.println("Left Pressed");
+      if (millis() - last_side_movement > SIDE_DELAY)
+      {
+        block.move_left(grid);
+        last_side_movement = millis();
+      }
+      
+    break;
+    case RIGHT:
+      Serial.println("Right Pressed");
+      if (millis() - last_side_movement > SIDE_DELAY)
+      {
+        block.move_right(grid);
+        last_side_movement = millis();
 
-      last_side_movement = millis();
+      }
+      
+    break;
+    case NONE:
+    
+    break;
+    
+    default:
+      
+      Serial.println("ERROR: Unknown event");
+      
+    break;
     }
 
     if (millis() - last_down_movement > DOWN_DELAY)
