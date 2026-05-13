@@ -31,7 +31,6 @@ const points_2d S_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
 };
 const points_2d S_BLOCK_MID = {1,1};
 
-
 const points_2d I_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
     {0, 1}, {1, 1}, {2, 1}, {3, 1}
 };
@@ -103,6 +102,17 @@ class blocks_entity
     
     public:
         points_2d coordinates;
+
+        void lock_block(grid_entity &grid)
+        {
+            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+            {
+                points_2d entity;
+                entity.x = coordinates.x + hit_box[i].x;
+                entity.y = coordinates.y + hit_box[i].y;
+                grid.update_block(entity, colour);
+            }
+        }
         
         blocks_entity(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
@@ -182,23 +192,36 @@ class blocks_entity
             }
         }
 
-        void move_right(grid_entity &grid)
+        bool check_collision(vector_2d direction, grid_entity &grid)
         {
             for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
             {
-
                 points_2d checker;
-                checker.x = coordinates.x + hit_box[i].x + 1;
-                checker.y = coordinates.y + hit_box[i].y;
-                
+                checker.x = coordinates.x + hit_box[i].x + direction.i;
+                checker.y = coordinates.y + hit_box[i].y + direction.j;
+
                 if (grid.occupied(checker))
                 {
-                    return;
+                    return true;
                 }
                 if (grid.within_bounds(checker) == false)
                 {
-                    return;
+                    return true;
                 }
+            }
+
+            return false;
+        }
+
+        void move_right(grid_entity &grid)
+        {
+            vector_2d direction;
+            direction.i = 1;
+            direction.j = 0;
+
+            if (check_collision(direction, grid) == true)
+            {
+                return;
             }
                 
             replace(grid);
@@ -208,44 +231,29 @@ class blocks_entity
         
         void move_left(grid_entity &grid)
         {
-            for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
+            vector_2d direction;
+            direction.i = -1;
+            direction.j = 0;
+            
+            if (check_collision(direction, grid) == true)
             {
-                points_2d checker;
-                checker.x = coordinates.x + hit_box[i].x - 1;
-                checker.y = coordinates.y + hit_box[i].y;
-
-                if (grid.occupied(checker))
-                {
-                    return;
-                }
-                if (grid.within_bounds(checker) == false)
-                {
-                    return;
-                }
+                return;
             }
             
             replace(grid);
             coordinates.x -= 1;
             render(grid);
-            return;
         }
 
         bool move_down(grid_entity &grid)
         {
-            for (int i = 0; i < HIT_BOX_SIZE; i++)
+            vector_2d direction;
+            direction.i = 0;
+            direction.j = 1;
+            
+            if (check_collision(direction, grid) == true)
             {
-                points_2d checker;
-                checker.x = coordinates.x + hit_box[i].x;
-                checker.y = coordinates.y + hit_box[i].y + 1;
-
-                if (grid.occupied(checker))
-                {
-                    return false;
-                }
-                if (grid.within_bounds(checker) == false)
-                {
-                    return false;
-                }
+                return false;
             }
 
             replace(grid);

@@ -1,8 +1,8 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include "graphics.h"
 #include <Arduino.h>
+#include "graphics.h"
 
 extern const uint8_t SCREEN_WIDTH;
 extern const uint8_t SCREEN_HEIGHT;
@@ -28,12 +28,82 @@ enum grid_states
 class grid_entity
 {
     private:
-        grid_states grid[MAX_CELLS_X][MAX_CELLS_Y];
+        colours grid[MAX_CELLS_X][MAX_CELLS_Y];
         uint8_t width;
         uint8_t height;
-        
+
+        void shift_down(uint8_t start)
+        {
+            for (int8_t row = start; row >= 0; row--)
+            {
+                colours buffer[MAX_CELLS_X];
+                for (uint8_t col = 0; col < MAX_CELLS_X; col++)
+                {
+                    buffer[col] = grid[col][row - 1];
+                    grid[col][row] = buffer[col];
+                }
+            }
+            
+            for (uint8_t col = 0; col < MAX_CELLS_X; col++)
+            {
+                grid[col][0] = COLOUR_BLACK;
+            }
+        }
+
+        bool check_full_row(uint8_t row)
+        {
+            for (uint8_t col = 0; col < MAX_CELLS_X; col++)
+            {
+                if (grid[col][row].r == COLOUR_BLACK.r && grid[col][row].g == COLOUR_BLACK.g && grid[col][row].b == COLOUR_BLACK.b)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
     public:
         points_2d offset;
+
+        uint8_t check_rows()
+        {
+            uint8_t full_rows = 0;
+            
+            for (int8_t row = MAX_CELLS_Y - 1; row >= 0; row--)
+            {
+                bool full = check_full_row(row);
+                
+                if (full == true)
+                {
+                    full_rows += 1;
+                    shift_down(row);
+                    row--;
+                }
+            }
+
+            return full_rows;
+        }
+
+        void update_block(points_2d target, colours colour)
+        {
+            grid[target.x][target.y] = colour;
+        }
+
+        grid_entity(int x_offset=0, int y_offset=0)
+        {
+            for (int i = 0; i < MAX_CELLS_X; i++)
+            {
+                for (int j = 0; j < MAX_CELLS_Y; j++)
+                {
+                    grid[i][j] = COLOUR_BLACK;
+                }
+            }
+            offset.x = x_offset;
+            offset.y = y_offset;
+
+            width = MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH);
+            height = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
+        }
 
         grid_entity(uint8_t x_offset=0, uint8_t y_offset=0)
         {
@@ -41,7 +111,7 @@ class grid_entity
             {
                 for (uint8_t j = 0; j < MAX_CELLS_Y; j++)
                 {
-                    grid[i][j] = BLACK;
+                    grid[i][j] = COLOUR_BLACK;
                 }
             }
             offset.x = x_offset;
@@ -51,7 +121,7 @@ class grid_entity
             height = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
         }
         
-        void render()
+        void render_lines()
         {
             for (uint8_t i = 0; i <= MAX_CELLS_Y; i++)
             {
@@ -81,7 +151,7 @@ class grid_entity
 
         bool occupied(points_2d point)
         {
-            if (grid[point.x][point.y] != BLACK )
+            if (grid[point.x][point.y].r != COLOUR_BLACK.r || grid[point.x][point.y].g != COLOUR_BLACK.g || grid[point.x][point.y].b != COLOUR_BLACK.b )
             {
                 return true;
             }
