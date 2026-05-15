@@ -294,7 +294,6 @@ class blocks_entity
                 point.y = grid.offset.y + (coordinates.y + hit_box[row].y) * (CELL_SIZE + LINE_WIDTH);
                 render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
             }
-
         }
 };
 

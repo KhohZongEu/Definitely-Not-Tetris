@@ -12,19 +12,6 @@ const uint8_t MAX_CELLS_Y = 20;
 const uint8_t CELL_SIZE = 6;
 const uint8_t LINE_WIDTH = 1;
 
-
-enum grid_states
-{
-    BLACK,
-    RED,
-    GREEN,
-    BLUE,
-    PURPLE,
-    CYAN,
-    YELLOW,
-    ORANGE
-};
-
 class grid_entity
 {
     private:
@@ -87,22 +74,6 @@ class grid_entity
         void update_block(points_2d target, colours colour)
         {
             grid[target.x][target.y] = colour;
-        }
-
-        grid_entity(int x_offset=0, int y_offset=0)
-        {
-            for (int i = 0; i < MAX_CELLS_X; i++)
-            {
-                for (int j = 0; j < MAX_CELLS_Y; j++)
-                {
-                    grid[i][j] = COLOUR_BLACK;
-                }
-            }
-            offset.x = x_offset;
-            offset.y = y_offset;
-
-            width = MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH);
-            height = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
         }
 
         grid_entity(uint8_t x_offset=0, uint8_t y_offset=0)
