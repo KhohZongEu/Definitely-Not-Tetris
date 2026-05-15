@@ -26,14 +26,26 @@ class grid_entity
                 colours buffer[MAX_CELLS_X];
                 for (uint8_t col = 0; col < MAX_CELLS_X; col++)
                 {
+                    points_2d point;
+                    point.x = offset.x + col * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
+                    point.y = offset.y + row * (CELL_SIZE + LINE_WIDTH);
+                    render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
+                    
                     buffer[col] = grid[col][row - 1];
+                    
                     grid[col][row] = buffer[col];
+                    
+                    render_rect(point, CELL_SIZE, CELL_SIZE, grid[col][row]);
                 }
             }
             
             for (uint8_t col = 0; col < MAX_CELLS_X; col++)
             {
+                points_2d point;
+                point.x = offset.x + col * (CELL_SIZE + LINE_WIDTH) + LINE_WIDTH;
+                point.y = offset.y + 0;
                 grid[col][0] = COLOUR_BLACK;
+                render_rect(point, CELL_SIZE, CELL_SIZE, COLOUR_BLACK);
             }
         }
 
