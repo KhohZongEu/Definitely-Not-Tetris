@@ -50,6 +50,7 @@ points_2d transform(points_2d points);
 void move_rect(points_2d &initial, vector_2d direction, const colours &colour, uint8_t cell_size);
 void render_rect(points_2d points, int width, int height, const colours &colour);
 void render_line(points_2d start, points_2d end, const colours &colour);
+void render_text(points_2d point, char *text, colours colour);
 
 void graphics_init();
 void render_grid(uint8_t x_offset=0);

@@ -11,6 +11,8 @@ const uint8_t MAX_CELLS_X = 10;
 const uint8_t MAX_CELLS_Y = 20;
 const uint8_t CELL_SIZE = 6;
 const uint8_t LINE_WIDTH = 1;
+const uint8_t TOTAL_WIDTH = MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH);
+const uint8_t TOTAL_HEIGHT = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
 
 class grid_entity
 {
@@ -76,7 +78,7 @@ class grid_entity
                 {
                     full_rows += 1;
                     shift_down(row);
-                    row--;
+                    row++;
                 }
             }
 

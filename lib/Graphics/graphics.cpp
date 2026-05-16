@@ -55,3 +55,12 @@ void move_rect(points_2d &initial, vector_2d direction, const colours &colour, u
     
     render_rect(initial, cell_size, cell_size, colour);
 }
+
+void render_text(points_2d point, char *text, colours colour)
+{
+    points_2d actual_point = transform(point);
+    SCREEN.stroke(colour.b, colour.g, colour.r);
+
+    SCREEN.text(text, actual_point.x, actual_point.y);
+    SCREEN.noStroke();
+}

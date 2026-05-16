@@ -9,7 +9,7 @@ const uint8_t CS =  10;
 const uint8_t DC =  9;
 const uint8_t RST = 8;
 
-const uint8_t GRID_OFFSET_X = 29;
+const uint8_t GRID_OFFSET_X = 9;
 const uint8_t GRID_OFFSET_Y = 10;
 TFT SCREEN = TFT(CS, DC, RST);
 
@@ -36,12 +36,26 @@ uint16_t calculate_score(uint8_t consequtive_rows)
     }
 }
 
-void setup() {
+void update_score_string(char* score_val_string, uint16_t score)
+{
+  itoa(score, score_val_string, 10);
+}
+
+void update_visual_score(points_2d score_start,char* score_val_string, uint16_t score)
+{
+  score_start.x += 11;
+  render_text(score_start, score_val_string, COLOUR_BLACK);
+  update_score_string(score_val_string, score);
+  render_text(score_start, score_val_string, COLOUR_WHITE);
+}
+
+void setup() 
+{
   events event;
   grid_entity grid(GRID_OFFSET_X,GRID_OFFSET_Y);
 
   unsigned long last_down_movement = 0;
-  unsigned long last_side_movement = 0;
+  unsigned long last_movement = 0;
 
   Serial.begin(115200);
 
@@ -64,8 +78,19 @@ void setup() {
   uint16_t score = 0;
 
   grid.render_lines();
-  // grid.render(blocks[current_block].coordinates, blocks[current_block].hit_box);
   blocks[current_block].render(grid);
+  
+  points_2d score_start;
+  score_start.x =  TOTAL_WIDTH + 20;
+  score_start.y =  TOTAL_HEIGHT;
+
+  char* score_heading = (char *) malloc(8 * sizeof(char));
+  char* score_val_string = (char*) malloc(6 * sizeof(char));
+  
+  strcpy(score_heading, "Score: ");
+  render_text(score_start, score_heading, COLOUR_WHITE);
+
+  update_visual_score(score_start, score_val_string, score);
 
   Serial.println("Setup Complete!!");
   Serial.println("Entering Loop");
@@ -82,28 +107,28 @@ void setup() {
     break;
     case DOWN:
       Serial.println("Down Pressed");
-      if (millis() - last_side_movement > SIDE_DELAY)
+      if (millis() - last_movement > SIDE_DELAY)
       {
         blocks[current_block].rotate(grid);
-        last_side_movement = millis();
+        last_movement = millis();
       }
       
     break;
     case LEFT:
       Serial.println("Left Pressed");
-      if (millis() - last_side_movement > SIDE_DELAY)
+      if (millis() - last_movement > SIDE_DELAY)
       {
         blocks[current_block].move_left(grid);
-        last_side_movement = millis();
+        last_movement = millis();
       }
       
     break;
     case RIGHT:
       Serial.println("Right Pressed");
-      if (millis() - last_side_movement > SIDE_DELAY)
+      if (millis() - last_movement > SIDE_DELAY)
       {
         blocks[current_block].move_right(grid);
-        last_side_movement = millis();
+        last_movement = millis();
 
       }
       
@@ -132,17 +157,24 @@ void setup() {
       
       if (current_block >= 4)
       {
-          current_block = 0;
+        current_block = 0;
       }
 
       uint8_t full_rows = grid.check_rows();
-      score += calculate_score(full_rows);
+      
+      if (full_rows != 0)
+      {
+        score += calculate_score(full_rows);
+        update_visual_score(score_start, score_val_string, score);
+      }
       last_down_movement = millis();
     }
 
   }
 }
 
-void loop() {
+void loop()
+{
   
 }
+
