@@ -116,7 +116,7 @@ class blocks_entity
         
         blocks_entity(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
-            coordinates.x = 0;
+            coordinates.x = 3;
             coordinates.y = 0;
 
             rotation = NEUTRAL_ROTATE;

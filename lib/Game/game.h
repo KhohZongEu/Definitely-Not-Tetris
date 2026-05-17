@@ -9,17 +9,21 @@ class game_entity
     private:
         uint8_t offset_x;
         uint8_t offset_y;
-
         blocks_entity blocks[4];
         grid_entity grid;
-        events event;
         int current_block;
+
+        points_2d score_point;
+        // char score_val_string[6];
+        // char score_header[8];
+
         const unsigned long SIDE_DELAY = 100;
         const unsigned long DOWN_DELAY = 200;
-
-        unsigned long last_down_movement = 0;
+        
         unsigned long last_side_movement = 0;
+        unsigned long last_down_movement = 0;
 
+        events event;
 
         uint16_t calculate_score(uint8_t consequtive_rows)
         {
@@ -40,6 +44,19 @@ class game_entity
                 return consequtive_rows * 800;
             }
         }
+
+        void update_score_string(char* score_val_string, uint16_t score)
+        {
+            itoa(score, score_val_string, 10);
+        }
+
+        void update_visual_score(points_2d score_start,char* score_val_string, uint16_t score)
+        {
+            score_start.x += 11;
+            render_text(score_start, score_val_string, COLOUR_BLACK);
+            update_score_string(score_val_string, score);
+            render_text(score_start, score_val_string, COLOUR_WHITE);
+        }
     
     public:
         int score;
@@ -47,22 +64,35 @@ class game_entity
         game_entity(uint8_t offset_x=0, uint8_t offset_y=0)
         {
             graphics_init();
-            render_line({0,0}, {50,50}, COLOUR_BLUE);
 
             this->offset_x = offset_x;
             this->offset_y = offset_y;
-            this->grid = grid_entity(this->offset_x, this->offset_y); 
+            this->grid = grid_entity(offset_x, offset_y); 
+
             for (int i = 0; i < 4; i++)
             {
                 blocks[i] = random_block();
             }
-
             current_block = 0;
+            
             score = 0;
+
+            event = events();
             event.init();
             
+            score_point.x = TOTAL_WIDTH + offset_x + 5;
+            score_point.y = TOTAL_HEIGHT;
+
+            // strcpy(score_header, "Score: ");
+
+        }
+
+        void init_render()
+        {
+            // render_text(score_point, score_header, COLOUR_WHITE);
             grid.render_lines();
             blocks[current_block].render(grid);
+            // update_visual_score(score_point, score_val_string, score);
         }
 
         bool main_game()
@@ -134,7 +164,12 @@ class game_entity
                 }
 
                 uint8_t full_rows = grid.check_rows();
-                score += calculate_score(full_rows);
+
+                if (full_rows != 0)
+                {
+                    score += calculate_score(full_rows);
+                    // update_visual_score(score_point, score_val_string, score);
+                }
                 last_down_movement = millis();
             }
 
