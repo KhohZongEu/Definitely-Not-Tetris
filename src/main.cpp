@@ -12,13 +12,18 @@ TFT SCREEN = TFT(CS, DC, RST);
 
 void setup()
 {
+    Serial.begin(115200);
     game_entity game(GRID_OFFSET_X, GRID_OFFSET_Y);
-
+    
     game.init_render();
-
+    
     while (true)
     {
-      game.main_game();
+      game.check_start();
+      while (game.start == true)
+      {
+        game.main_game();
+      }
     }
 }
 

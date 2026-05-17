@@ -11,15 +11,11 @@ const uint8_t MAX_CELLS_X = 10;
 const uint8_t MAX_CELLS_Y = 20;
 const uint8_t CELL_SIZE = 6;
 const uint8_t LINE_WIDTH = 1;
-const uint8_t TOTAL_WIDTH = MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH);
-const uint8_t TOTAL_HEIGHT = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
 
 class grid_entity
 {
     private:
         colours grid[MAX_CELLS_X][MAX_CELLS_Y];
-        uint8_t width;
-        uint8_t height;
 
         void shift_down(uint8_t start)
         {
@@ -64,6 +60,8 @@ class grid_entity
         }
 
     public:
+        uint8_t width;
+        uint8_t height;
         points_2d offset;
 
         uint8_t check_rows()
@@ -136,6 +134,11 @@ class grid_entity
 
         bool occupied(points_2d point)
         {
+            if (point.x >= MAX_CELLS_X || point.y >= MAX_CELLS_Y)
+            {
+                return true;
+            }
+
             if (grid[point.x][point.y].r != COLOUR_BLACK.r || grid[point.x][point.y].g != COLOUR_BLACK.g || grid[point.x][point.y].b != COLOUR_BLACK.b )
             {
                 return true;

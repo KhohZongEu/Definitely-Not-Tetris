@@ -132,7 +132,7 @@ class blocks_entity
 
         blocks_entity()
         {
-            coordinates.x = 0;
+            coordinates.x = 3;
             coordinates.y = 0;
             rotation = NEUTRAL_ROTATE;
         }

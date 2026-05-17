@@ -23,8 +23,6 @@ class game_entity
         unsigned long last_side_movement = 0;
         unsigned long last_down_movement = 0;
 
-        events event;
-
         uint16_t calculate_score(uint8_t consequtive_rows)
         {
             if (consequtive_rows == 1)
@@ -59,11 +57,13 @@ class game_entity
         }
     
     public:
+        events event;
         uint16_t score;
+        bool start;
 
         game_entity(uint8_t offset_x=0, uint8_t offset_y=0)
         {
-            
+            start = false;
 
             this->offset_x = offset_x;
             this->offset_y = offset_y;
@@ -80,8 +80,8 @@ class game_entity
             event = events();
             event.init();
             
-            score_point.x = TOTAL_WIDTH + offset_x + 5;
-            score_point.y = TOTAL_HEIGHT;
+            score_point.x = grid.width + offset_x + 5;
+            score_point.y = grid.height;
         }
         
         void init_render()
@@ -93,19 +93,28 @@ class game_entity
             update_visual_score(score_point, score_val_string, score);
         }
 
+        void check_start()
+        {
+            event.update();
+            if (event.button_pressed == UP)
+            {
+                start = true;
+            }
+        }
+
         bool main_game()
         {
             event.update();
 
             if (blocks[current_block].check_collision({0,0},grid))
             {
+                start = false;
                 return false;
             }
-
             switch (event.button_pressed)
             {
             case UP:
-            
+
             break;
             case DOWN:
                 if (millis() - last_side_movement > SIDE_DELAY)
