@@ -11,14 +11,14 @@ class game_entity
         uint8_t offset_y;
         blocks_entity blocks[4];
         grid_entity grid;
-        int current_block;
+        uint8_t current_block;
 
         points_2d score_point;
-        // char score_val_string[6];
-        // char score_header[8];
-
-        const unsigned long SIDE_DELAY = 100;
-        const unsigned long DOWN_DELAY = 200;
+        const char score_header[8] = "Score: ";
+        char score_val_string[6] = "";
+        
+        const uint8_t SIDE_DELAY = 100;
+        const uint8_t DOWN_DELAY = 200;
         
         unsigned long last_side_movement = 0;
         unsigned long last_down_movement = 0;
@@ -59,17 +59,17 @@ class game_entity
         }
     
     public:
-        int score;
+        uint16_t score;
 
         game_entity(uint8_t offset_x=0, uint8_t offset_y=0)
         {
-            graphics_init();
+            
 
             this->offset_x = offset_x;
             this->offset_y = offset_y;
             this->grid = grid_entity(offset_x, offset_y); 
 
-            for (int i = 0; i < 4; i++)
+            for (uint8_t i = 0; i < 4; i++)
             {
                 blocks[i] = random_block();
             }
@@ -82,17 +82,15 @@ class game_entity
             
             score_point.x = TOTAL_WIDTH + offset_x + 5;
             score_point.y = TOTAL_HEIGHT;
-
-            // strcpy(score_header, "Score: ");
-
         }
-
+        
         void init_render()
         {
-            // render_text(score_point, score_header, COLOUR_WHITE);
+            graphics_init();
+            render_text(score_point, score_header, COLOUR_WHITE);
             grid.render_lines();
             blocks[current_block].render(grid);
-            // update_visual_score(score_point, score_val_string, score);
+            update_visual_score(score_point, score_val_string, score);
         }
 
         bool main_game()
@@ -107,11 +105,9 @@ class game_entity
             switch (event.button_pressed)
             {
             case UP:
-                Serial.println("Up Pressed");
             
             break;
             case DOWN:
-                Serial.println("Down Pressed");
                 if (millis() - last_side_movement > SIDE_DELAY)
                 {
                     blocks[current_block].rotate(grid);
@@ -120,7 +116,6 @@ class game_entity
             
             break;
             case LEFT:
-                Serial.println("Left Pressed");
                 if (millis() - last_side_movement > SIDE_DELAY)
                 {
                     blocks[current_block].move_left(grid);
@@ -129,7 +124,6 @@ class game_entity
             
             break;
             case RIGHT:
-                Serial.println("Right Pressed");
                 if (millis() - last_side_movement > SIDE_DELAY)
                 {
                     blocks[current_block].move_right(grid);
@@ -142,7 +136,6 @@ class game_entity
             
             break;
             default:
-                Serial.println("ERROR: Unknown event");
 
             break;
             }
@@ -168,7 +161,7 @@ class game_entity
                 if (full_rows != 0)
                 {
                     score += calculate_score(full_rows);
-                    // update_visual_score(score_point, score_val_string, score);
+                    update_visual_score(score_point, score_val_string, score);
                 }
                 last_down_movement = millis();
             }

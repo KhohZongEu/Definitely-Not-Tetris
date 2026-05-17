@@ -36,27 +36,7 @@ void graphics_init()
     SCREEN.fill(COLOUR_BLACK.r, COLOUR_BLACK.g, COLOUR_BLACK.b);
 }
 
-void move_rect(points_2d &initial, vector_2d direction, const colours &colour, uint8_t cell_size)
-{
-    if (direction.i != 0 || direction.j != 0)
-    {
-        render_rect(initial, cell_size, cell_size, COLOUR_BLACK);
-    }
-    
-    if (initial.x + direction.i < SCREEN_WIDTH && initial.x + direction.i >= 0)
-    {
-        initial.x += direction.i;
-    }
-    
-    if (initial.y + direction.j < SCREEN_HEIGHT && initial.y + direction.j >= 0)
-    {
-        initial.y += direction.j;
-    }
-    
-    render_rect(initial, cell_size, cell_size, colour);
-}
-
-void render_text(points_2d point, char *text, colours colour)
+void render_text(points_2d point, const char *text, colours colour)
 {
     points_2d actual_point = transform(point);
     SCREEN.stroke(colour.b, colour.g, colour.r);

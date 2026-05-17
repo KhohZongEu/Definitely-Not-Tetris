@@ -8,8 +8,6 @@ blocks_entity random_block()
     randomSeed(analogRead(5));
     uint8_t value = random(7);
     value = random(7);
-    Serial.print("Random Val: ");
-    Serial.println(value);
 
     box_shapes shape = (box_shapes) value;
 
