@@ -44,3 +44,8 @@ void render_text(points_2d point, const char *text, colours colour)
     SCREEN.text(text, actual_point.x, actual_point.y);
     SCREEN.noStroke();
 }
+
+void clear_screen()
+{
+    SCREEN.background(0, 0, 0);
+}

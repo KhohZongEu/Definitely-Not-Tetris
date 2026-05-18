@@ -14,11 +14,12 @@ class game_entity
         uint8_t current_block;
 
         points_2d score_point;
+        uint8_t full_row_tracker;
         const char score_header[8] = "Score: ";
-        char score_val_string[6] = "";
+        char score_val_string[10] = "";
         
         const uint8_t SIDE_DELAY = 100;
-        const uint8_t DOWN_DELAY = 200;
+        uint8_t DOWN_DELAY = 300;
         
         unsigned long last_side_movement = 0;
         unsigned long last_down_movement = 0;
@@ -55,10 +56,42 @@ class game_entity
             update_score_string(score_val_string, score);
             render_text(score_start, score_val_string, COLOUR_WHITE);
         }
+
+        void reset_blocks()
+        {
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                blocks[i] = random_block();
+            }
+            current_block = 0;
+        }
+
+        // void display_next_block_list()
+        // {
+        //     uint8_t offset = 0;
+        //     if (current_block != 0)
+        //     {
+        //         offset = (HIT_BOX_SIZE * CELL_SIZE) * current_block;
+
+        //         for (int8_t i = current_block -1; i >= 0; i--)
+        //         {
+        //             blocks[i].coordinates.x = grid.width + offset_x + 5;
+        //             blocks[i].coordinates.y = (HIT_BOX_SIZE * CELL_SIZE) * i;    
+        //             blocks[i].render(grid);
+        //         }
+        //     }
+            
+        //     for (uint8_t i = current_block; i < 4; i++)
+        //     {
+        //         blocks[i].coordinates.x = grid.width + offset_x + 5;
+        //         blocks[i].coordinates.y = (HIT_BOX_SIZE * CELL_SIZE) * i + offset;
+        //         blocks[i].render(grid);
+        //     }
+        // }
     
     public:
         events event;
-        uint16_t score;
+        uint32_t score;
         bool start;
 
         game_entity(uint8_t offset_x=0, uint8_t offset_y=0)
@@ -69,11 +102,7 @@ class game_entity
             this->offset_y = offset_y;
             this->grid = grid_entity(offset_x, offset_y); 
 
-            for (uint8_t i = 0; i < 4; i++)
-            {
-                blocks[i] = random_block();
-            }
-            current_block = 0;
+            reset_blocks();
             
             score = 0;
 
@@ -93,13 +122,13 @@ class game_entity
             update_visual_score(score_point, score_val_string, score);
         }
 
-        void check_start()
+        void reset()
         {
-            event.update();
-            if (event.button_pressed == UP)
-            {
-                start = true;
-            }
+            clear_screen();
+            reset_blocks();
+            score = 0;
+            init_render();
+            grid.reset();
         }
 
         bool main_game()
@@ -114,9 +143,11 @@ class game_entity
             switch (event.button_pressed)
             {
             case UP:
-
+                Serial.println(F("Up pressed"));
+                
             break;
             case DOWN:
+                Serial.println(F("Down pressed"));
                 if (millis() - last_side_movement > SIDE_DELAY)
                 {
                     blocks[current_block].rotate(grid);
@@ -125,6 +156,7 @@ class game_entity
             
             break;
             case LEFT:
+                Serial.println(F("Left Pressed"));
                 if (millis() - last_side_movement > SIDE_DELAY)
                 {
                     blocks[current_block].move_left(grid);
@@ -133,6 +165,8 @@ class game_entity
             
             break;
             case RIGHT:
+                Serial.println(F("Right Pressed"));
+
                 if (millis() - last_side_movement > SIDE_DELAY)
                 {
                     blocks[current_block].move_right(grid);
@@ -145,7 +179,8 @@ class game_entity
             
             break;
             default:
-
+                Serial.println(F("ERROR: Something weird happened with input"));
+            
             break;
             }
 
@@ -170,9 +205,16 @@ class game_entity
                 if (full_rows != 0)
                 {
                     score += calculate_score(full_rows);
+                    full_row_tracker += full_rows;
                     update_visual_score(score_point, score_val_string, score);
                 }
                 last_down_movement = millis();
+            }
+
+            if (full_row_tracker >= 10)
+            {
+                full_row_tracker -= 10;
+                DOWN_DELAY -= 50;
             }
 
             return true;

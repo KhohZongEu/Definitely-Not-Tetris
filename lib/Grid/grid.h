@@ -106,30 +106,64 @@ class grid_entity
         
         void render_lines()
         {
-            for (uint8_t i = 0; i <= MAX_CELLS_Y; i++)
-            {
-                points_2d start;
-                start.x = offset.x + 0;
-                start.y = offset.y + (i * (CELL_SIZE + LINE_WIDTH));
-                
-                points_2d end;
-                end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
-                end.y =  offset.y + (i * (CELL_SIZE + LINE_WIDTH));
+            points_2d start;
+            start.x = offset.x + 0;
+            start.y = offset.y + (0 * (CELL_SIZE + LINE_WIDTH));
+            
+            points_2d end;
+            end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
+            end.y =  offset.y + (0 * (CELL_SIZE + LINE_WIDTH));
 
-                render_line(start, end, COLOUR_WHITE);
-            }
-            for (uint8_t i = 0; i <= MAX_CELLS_X; i++)
-            {
-                points_2d start;
-                start.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
-                start.y = offset.y + 0;
+            render_line(start, end, COLOUR_WHITE);
+            
+            start.x = offset.x + 0;
+            start.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
+            
+            end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
+            end.y =  offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
+            
+            render_line(start, end, COLOUR_WHITE);
+            
+            start.x = offset.x + (0 * (CELL_SIZE + LINE_WIDTH));
+            start.y = offset.y + 0;
+            
+            end.x = offset.x + (0 * (CELL_SIZE + LINE_WIDTH));
+            end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
+            render_line(start, end, COLOUR_WHITE);
+            
+            start.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
+            start.y = offset.y + 0;
+            
+            end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
+            end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
+            
+            render_line(start, end, COLOUR_WHITE);
+            
+
+            // for (uint8_t i = 0; i <= MAX_CELLS_Y; i++)
+            // {
+            //     points_2d start;
+            //     start.x = offset.x + 0;
+            //     start.y = offset.y + (i * (CELL_SIZE + LINE_WIDTH));
                 
-                points_2d end;
-                end.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
-                end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
+            //     points_2d end;
+            //     end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
+            //     end.y =  offset.y + (i * (CELL_SIZE + LINE_WIDTH));
+
+            //     render_line(start, end, COLOUR_WHITE);
+            // }
+            // for (uint8_t i = 0; i <= MAX_CELLS_X; i++)
+            // {
+            //     points_2d start;
+            //     start.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
+            //     start.y = offset.y + 0;
                 
-                render_line(start, end, COLOUR_WHITE);
-            }
+            //     points_2d end;
+            //     end.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
+            //     end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
+                
+            //     render_line(start, end, COLOUR_WHITE);
+            // }
         }
 
         bool occupied(points_2d point)
@@ -185,6 +219,17 @@ class grid_entity
             else
             {
                 return true;
+            }
+        }
+
+        void reset()
+        {
+            for (uint8_t i = 0; i < MAX_CELLS_X; i++)
+            {
+                for (uint8_t j = 0; j < MAX_CELLS_Y; j++)
+                {
+                    grid[i][j] = COLOUR_BLACK;
+                }
             }
         }
 };

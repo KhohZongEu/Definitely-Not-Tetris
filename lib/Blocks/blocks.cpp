@@ -2,8 +2,6 @@
 
 blocks_entity random_block()
 {
-
-    
     pinMode(A5, INPUT);
     randomSeed(analogRead(5));
     uint8_t value = random(7);
@@ -37,7 +35,7 @@ blocks_entity random_block()
     break;
     
     default:
-        Serial.println("ERROR: Randomise Block Failed");
+        Serial.println(F("ERROR: Randomise Block Failed"));
         break;
     }
 
