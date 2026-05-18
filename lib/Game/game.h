@@ -19,7 +19,7 @@ class game_entity
         char score_val_string[10] = "";
         
         const uint8_t SIDE_DELAY = 100;
-        uint8_t DOWN_DELAY = 300;
+        uint8_t down_delay = 250;
         
         unsigned long last_side_movement = 0;
         unsigned long last_down_movement = 0;
@@ -184,7 +184,7 @@ class game_entity
             break;
             }
 
-            if (millis() - last_down_movement > DOWN_DELAY)
+            if (millis() - last_down_movement > down_delay)
             {
                 if (blocks[current_block].move_down(grid) == false)
                 {
@@ -211,10 +211,10 @@ class game_entity
                 last_down_movement = millis();
             }
 
-            if (full_row_tracker >= 10)
+            if (full_row_tracker >= 10 && down_delay > 50)
             {
                 full_row_tracker -= 10;
-                DOWN_DELAY -= 50;
+                down_delay -= 50;
             }
 
             return true;
