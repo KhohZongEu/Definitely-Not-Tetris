@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include "grid.h"
 #include "graphics.h"
+#include "constants.h"
 
-const int HIT_BOX_SIZE = 4;
 
 enum box_shapes
 {
@@ -26,47 +26,7 @@ enum rotation_states
     RIGHT_ROTATE
 };
 
-const points_2d S_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {0, 1}, {1, 0}, {1, 1}, {2, 0}
-};
-const points_2d S_BLOCK_MID = {1,1};
 
-const points_2d I_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {0, 1}, {1, 1}, {2, 1}, {3, 1}
-};
-const points_2d I_BLOCK_MID = {3,3};
-
-const points_2d T_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {0, 1}, {1, 1}, {1, 0}, {2, 1}
-};
-const points_2d T_BLOCK_MID = {1,1};
-
-const points_2d Z_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {0, 0}, {1, 0}, {1, 1}, {2, 1}
-};
-const points_2d Z_BLOCK_MID = {1,1};
-
-const points_2d J_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {0, 0}, {0, 1}, {1, 1}, {2, 1}
-};
-const points_2d J_BLOCK_MID = {1,1};
-
-const points_2d O_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {1, 0}, {2, 0}, {1, 1}, {2, 1}
-};
-const points_2d O_BLOCK_MID = {2,1};
-
-const points_2d L_BLOCK_HIT_BOX[HIT_BOX_SIZE] = {
-    {0, 1}, {1, 1}, {2, 1}, {2, 0}
-};
-const points_2d L_BLOCK_MID = {1,1};
-
-/*
-Defines a transformation matrix
-| 0  -1 |
-| 1   0 |
-*/
-const vector_2d ROTATION_MATRIX_90[2] = {{0, 1}, {-1, 0}};
 
 class blocks_entity
 {

@@ -3,47 +3,9 @@
     
 #include <SPI.h>
 #include <TFT.h>
-
-struct points_2d
-{
-    uint16_t x;
-    uint16_t y;
-};
-
-struct vector_2d
-{
-    int8_t i;
-    int8_t j;
-};
-
-struct colours
-{
-    uint8_t r;
-    uint8_t g; 
-    uint8_t b;
-};
-
-const colours COLOUR_BLACK = {0, 0, 0};
-const colours COLOUR_WHITE = {0xFF, 0xFF, 0xFF};
-const colours COLOUR_CYAN = {0x00, 0xFF, 0xFF};
-const colours COLOUR_BLUE = {0x00, 0x00, 0xFF};
-const colours COLOUR_ORANGE = {0xFF, 0x63, 0x00};
-const colours COLOUR_YELLOW = {0xFF, 0xFF, 0x00};
-const colours COLOUR_GREEN = {0x00, 0xFF, 0x00};
-const colours COLOUR_RED = {0xFF, 0x00, 0x00};
-const colours COLOUR_PURPLE = {0x4B, 0x00, 0x82};
+#include "constants.h"
 
 extern TFT SCREEN;
-
-const uint8_t SCREEN_WIDTH = 128;
-const uint8_t SCREEN_HEIGHT = 160;
-
-/*
-Defines a transformation matrix
-| 0  -1 |
-| 1   0 |
-*/
-const vector_2d SCREEN_ROTATION_MATRIX[2] = {{0, 1}, {-1, 0}};
 
 points_2d transform(points_2d points);
 

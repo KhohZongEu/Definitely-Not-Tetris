@@ -3,14 +3,7 @@
 
 #include <Arduino.h>
 #include "graphics.h"
-
-extern const uint8_t SCREEN_WIDTH;
-extern const uint8_t SCREEN_HEIGHT;
-
-const uint8_t MAX_CELLS_X = 10;
-const uint8_t MAX_CELLS_Y = 20;
-const uint8_t CELL_SIZE = 6;
-const uint8_t LINE_WIDTH = 1;
+#include "constants.h"
 
 class grid_entity
 {
