@@ -23,6 +23,12 @@ class events
     public:
         button_type button_pressed;
 
+        /**
+         * Default Constructor for the Events class
+         * 
+         * @param void 
+         * @return void
+         */
         events()
         {
             pin_up = A0;
@@ -31,6 +37,15 @@ class events
             pin_right = A3;
         }
 
+        /**
+         * Constructor for the Events class with user provided arguements
+         * 
+         * @param pin_up The pin for the top button
+         * @param pin_down The pin for the bottom button
+         * @param pin_left The pin for the left button
+         * @param pin_right The pin for the right button
+         * @return void
+         */
         events(uint8_t pin_up, uint8_t pin_down, uint8_t pin_left, uint8_t pin_right)
         {
             this->pin_up = pin_up;
@@ -38,7 +53,13 @@ class events
             this->pin_left = pin_left;
             this->pin_right = pin_right;
         }
-
+        
+        /**
+         * Initialises the pins for usage
+         * 
+         * @param void 
+         * @return void
+         */
         void init()
         {
             pinMode(pin_up, INPUT);
@@ -47,6 +68,12 @@ class events
             pinMode(pin_right, INPUT);
         }
 
+        /**
+         * Updates the state of which button is pressed
+         * 
+         * @param void 
+         * @return void
+         */
         void update()
         {
             if (digitalRead(pin_up))

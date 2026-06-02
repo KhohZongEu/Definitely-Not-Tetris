@@ -10,6 +10,12 @@ class grid_entity
     private:
         colours grid[MAX_CELLS_X][MAX_CELLS_Y];
 
+        /**
+         * Shifts down the rows above
+         * 
+         * @param start The first row where all rows above needs to be shifted down.
+         * @return void
+         */
         void shift_down(uint8_t start)
         {
             for (int8_t row = start; row >= 0; row--)
@@ -40,6 +46,12 @@ class grid_entity
             }
         }
 
+        /**
+         * Checks whether a row is actually full
+         * 
+         * @param row The row that is being checked
+         * @return bool True if the row is full, False if the row is not full
+         */
         bool check_full_row(uint8_t row)
         {
             for (uint8_t col = 0; col < MAX_CELLS_X; col++)
@@ -57,6 +69,12 @@ class grid_entity
         uint8_t height;
         points_2d offset;
 
+        /**
+         * Checks all the rows in the grid starting from the bottom and shifts the rows down if there if a full row
+         * 
+         * @param void
+         * @return int The number of full rows that was detected
+         */
         uint8_t check_rows()
         {
             uint8_t full_rows = 0;
@@ -76,11 +94,25 @@ class grid_entity
             return full_rows;
         }
 
+        /**
+         * Updates a grid location to based on whether there is a block there
+         * 
+         * @param target The target location where the grid cell is to be updated
+         * @param colour The colour of the grid cell needs to be
+         * @return void
+         */
         void update_block(points_2d target, colours colour)
         {
             grid[target.x][target.y] = colour;
         }
 
+        /**
+         * The constructor for the grid_entity class
+         * 
+         * @param x_offset The offset of the grid from the x axis (default = 0)
+         * @param y_offset The offset of the grid from the y axis (default = 0)
+         * @return void
+         */
         grid_entity(uint8_t x_offset=0, uint8_t y_offset=0)
         {
             for (uint8_t i = 0; i < MAX_CELLS_X; i++)
@@ -97,6 +129,12 @@ class grid_entity
             height = MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH);
         }
         
+        /**
+         * Renders blocks that are fixed in a grid
+         * 
+         * @param void
+         * @return void
+         */
         void render_lines()
         {
             points_2d start;
@@ -131,34 +169,15 @@ class grid_entity
             end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
             
             render_line(start, end, COLOUR_WHITE);
-            
 
-            // for (uint8_t i = 0; i <= MAX_CELLS_Y; i++)
-            // {
-            //     points_2d start;
-            //     start.x = offset.x + 0;
-            //     start.y = offset.y + (i * (CELL_SIZE + LINE_WIDTH));
-                
-            //     points_2d end;
-            //     end.x = offset.x + (MAX_CELLS_X * (CELL_SIZE + LINE_WIDTH));
-            //     end.y =  offset.y + (i * (CELL_SIZE + LINE_WIDTH));
-
-            //     render_line(start, end, COLOUR_WHITE);
-            // }
-            // for (uint8_t i = 0; i <= MAX_CELLS_X; i++)
-            // {
-            //     points_2d start;
-            //     start.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
-            //     start.y = offset.y + 0;
-                
-            //     points_2d end;
-            //     end.x = offset.x + (i * (CELL_SIZE + LINE_WIDTH));
-            //     end.y = offset.y + (MAX_CELLS_Y * (CELL_SIZE + LINE_WIDTH));
-                
-            //     render_line(start, end, COLOUR_WHITE);
-            // }
         }
 
+        /**
+         * Checks whether a grid coordinate is occupied
+         * 
+         * @param point The coordinates of the point to check
+         * @return bool True if its occupied, False if its not occupied
+         */
         bool occupied(points_2d point)
         {
             if (point.x >= MAX_CELLS_X || point.y >= MAX_CELLS_Y)
@@ -176,6 +195,12 @@ class grid_entity
             }
         }
 
+        /**
+         * Checks whether a grid coordinate is within bounds in both the x and y axis
+         * 
+         * @param point The coordinates of the point to check
+         * @return bool True if its within bounds, False if its out of bounds
+         */
         bool within_bounds(points_2d point)
         {
             if (within_bounds_x(point.x) == false)
@@ -191,6 +216,12 @@ class grid_entity
             return true;
         }
         
+        /**
+         * Checks whether a grid coordinate is within bounds in the x axis
+         * 
+         * @param x The x axis coordinate of the point to check
+         * @return bool True if its within bounds, False if its out of bounds
+         */
         bool within_bounds_x(uint8_t x)
         {
             if (x >= MAX_CELLS_X || x < 0)
@@ -203,6 +234,12 @@ class grid_entity
             }
         }
 
+        /**
+         * Checks whether a grid coordinate is within bounds in the y axis
+         * 
+         * @param y The y axis coordinate of the point to check
+         * @return bool True if its within bounds, False if its out of bounds
+         */
         bool within_bounds_y(uint8_t y)
         {
             if (y >= MAX_CELLS_Y || y < 0)
@@ -215,6 +252,12 @@ class grid_entity
             }
         }
 
+        /**
+         * Resets all the contents of the grid
+         * 
+         * @param void
+         * @return void
+         */
         void reset()
         {
             for (uint8_t i = 0; i < MAX_CELLS_X; i++)

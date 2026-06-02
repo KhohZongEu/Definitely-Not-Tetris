@@ -24,6 +24,12 @@ class game_entity
         unsigned long last_side_movement = 0;
         unsigned long last_down_movement = 0;
 
+        /**
+         * Calculates the score from a line clear
+         * 
+         * @param consequtive_rows The number of consequtive rows cleared
+         * @return int The score that corresponds to the number of rows cleared
+         */
         uint16_t calculate_score(uint8_t consequtive_rows)
         {
             if (consequtive_rows == 1)
@@ -44,12 +50,27 @@ class game_entity
             }
         }
 
-        void update_score_string(char* score_val_string, uint16_t score)
+        /**
+         * Updates the string of the score
+         * 
+         * @param score_val_string A pointer to the string that stores the score
+         * @param score The actual score of the game
+         * @return void
+         */
+        void update_score_string(char* score_val_string, uint32_t score)
         {
             itoa(score, score_val_string, 10);
         }
 
-        void update_visual_score(points_2d score_start,char* score_val_string, uint16_t score)
+        /**
+         * Updates the score on the screen
+         * 
+         * @param score_start The location where the score will be printed
+         * @param score_val_string The string that stores the score
+         * @param score The actual score of the game
+         * @return void
+         */
+        void update_visual_score(points_2d score_start,char* score_val_string, uint32_t score)
         {
             score_start.x += 11;
             render_text(score_start, score_val_string, COLOUR_BLACK);
@@ -57,6 +78,12 @@ class game_entity
             render_text(score_start, score_val_string, COLOUR_WHITE);
         }
 
+        /**
+         * Resets a block in the array after it has been locked to the grid
+         * 
+         * @param void
+         * @return void
+         */
         void reset_blocks()
         {
             for (uint8_t i = 0; i < 4; i++)
@@ -65,35 +92,19 @@ class game_entity
             }
             current_block = 0;
         }
-
-        // void display_next_block_list()
-        // {
-        //     uint8_t offset = 0;
-        //     if (current_block != 0)
-        //     {
-        //         offset = (HIT_BOX_SIZE * CELL_SIZE) * current_block;
-
-        //         for (int8_t i = current_block -1; i >= 0; i--)
-        //         {
-        //             blocks[i].coordinates.x = grid.width + offset_x + 5;
-        //             blocks[i].coordinates.y = (HIT_BOX_SIZE * CELL_SIZE) * i;    
-        //             blocks[i].render(grid);
-        //         }
-        //     }
-            
-        //     for (uint8_t i = current_block; i < 4; i++)
-        //     {
-        //         blocks[i].coordinates.x = grid.width + offset_x + 5;
-        //         blocks[i].coordinates.y = (HIT_BOX_SIZE * CELL_SIZE) * i + offset;
-        //         blocks[i].render(grid);
-        //     }
-        // }
     
     public:
         events event;
         uint32_t score;
         bool start;
 
+        /**
+         * Constructor for the game_entity class with user provided arguements
+         * 
+         * @param offset_x The offset of the game in the x axis
+         * @param offset_y The offset of the game in the y axis
+         * @return void
+         */
         game_entity(uint8_t offset_x=0, uint8_t offset_y=0)
         {
             start = false;
@@ -112,7 +123,13 @@ class game_entity
             score_point.x = grid.width + offset_x + 5;
             score_point.y = grid.height;
         }
-        
+
+        /**
+         * Renders the initial graphics before the game is started
+         * 
+         * @param void
+         * @return void
+         */
         void init_render()
         {
             graphics_init();
@@ -122,6 +139,12 @@ class game_entity
             update_visual_score(score_point, score_val_string, score);
         }
 
+        /**
+         * Resets the game state and values
+         * 
+         * @param void
+         * @return void
+         */
         void reset()
         {
             clear_screen();
@@ -131,14 +154,19 @@ class game_entity
             grid.reset();
         }
 
-        bool main_game()
+        /**
+         * The main game logic while the game is being played
+         * 
+         * @param void
+         * @return void
+         */
+        void main_game()
         {
             event.update();
 
             if (blocks[current_block].check_collision({0,0},grid))
             {
                 start = false;
-                return false;
             }
             switch (event.button_pressed)
             {
@@ -216,7 +244,5 @@ class game_entity
                 full_row_tracker -= 10;
                 down_delay -= 50;
             }
-
-            return true;
         }
 };

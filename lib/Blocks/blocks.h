@@ -26,8 +26,6 @@ enum rotation_states
     RIGHT_ROTATE
 };
 
-
-
 class blocks_entity
 {
     private:
@@ -37,6 +35,12 @@ class blocks_entity
         points_2d middle;
         points_2d hit_box[HIT_BOX_SIZE];
 
+        /**
+         * Calculates the block rotation
+         * 
+         * @param input The original coordinate of a block segment
+         * @return points_2d The new coordinate of a block segment
+         */
         points_2d calculate_rotation(points_2d input)
         {
             points_2d output;
@@ -63,6 +67,12 @@ class blocks_entity
     public:
         points_2d coordinates;
 
+        /**
+         * Updates the grid to lock a block in place
+         * 
+         * @param &grid A reference to the grid that the block is within 
+         * @return void
+         */
         void lock_block(grid_entity &grid)
         {
             for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
@@ -74,6 +84,15 @@ class blocks_entity
             }
         }
         
+        /**
+         * Constructs the blocks class with specified parameters
+         * 
+         * @param shape The shape of the block
+         * @param colour The colour of the block
+         * @param hit_box[] An array of the hitbox
+         * @param mid The location of the rotation point of the block
+         * @return void
+         */
         blocks_entity(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
             coordinates.x = 3;
@@ -90,6 +109,12 @@ class blocks_entity
             }
         }
 
+        /**
+         * Default constructor of the block class
+         * 
+         * @param void
+         * @return void
+         */
         blocks_entity()
         {
             coordinates.x = 3;
@@ -97,6 +122,12 @@ class blocks_entity
             rotation = NEUTRAL_ROTATE;
         }
 
+        /**
+         * Handles what rotation state the block is in and rotates the block accordingly
+         * 
+         * @param void
+         * @return void
+         */
         void rotate(grid_entity &grid)
         {
             if (shape == OSHAPE)
@@ -152,6 +183,13 @@ class blocks_entity
             }
         }
 
+        /**
+         * Checks whether the block is going to collide with either the wall or another block
+         * 
+         * @param direction The direction the block needs to travel in a vector
+         * @param &grid The reference the the grid the block is in
+         * @return bool True when there is a collision, False when there is no collision
+         */
         bool check_collision(vector_2d direction, grid_entity &grid)
         {
             for (uint8_t i = 0; i < HIT_BOX_SIZE; i++)
@@ -173,6 +211,12 @@ class blocks_entity
             return false;
         }
 
+        /**
+         * Moves the block to the right if a valid move is detected
+         * 
+         * @param &grid The reference to the grid the block is in
+         * @return void
+         */
         void move_right(grid_entity &grid)
         {
             vector_2d direction;
@@ -189,6 +233,12 @@ class blocks_entity
             render(grid);
         }
         
+        /**
+         * Moves the block to the left if a valid move is detected
+         * 
+         * @param &grid The reference to the grid the block is in
+         * @return void
+         */
         void move_left(grid_entity &grid)
         {
             vector_2d direction;
@@ -205,6 +255,12 @@ class blocks_entity
             render(grid);
         }
 
+        /**
+         * Moves the block to the down if a valid move is detected
+         * 
+         * @param &grid The reference to the grid the block is in
+         * @return bool True when the block is moved down, False when the block can't move down
+         */
         bool move_down(grid_entity &grid)
         {
             vector_2d direction;
@@ -223,6 +279,15 @@ class blocks_entity
             return true;
         }
 
+        /**
+         * Updates the contents of the block with provided arguements
+         * 
+         * @param shape The shape of the block
+         * @param colour The colour of the block
+         * @param hit_box[] An array of the hitbox
+         * @param mid The location of the rotation point of the block
+         * @return void
+         */
         void update_type(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
             this->shape = shape;
@@ -234,6 +299,12 @@ class blocks_entity
             }
         }
 
+        /**
+         * Renders a block thats in a grid with their corresponding properties
+         * 
+         * @param &grid The reference to the grid the block is in
+         * @return void
+         */
         void render(grid_entity &grid)
         {
             for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
@@ -245,6 +316,12 @@ class blocks_entity
             }
         }
 
+        /**
+         * De-renders a block thats in a grid with their corresponding properties
+         * 
+         * @param &grid The reference to the grid the block is in
+         * @return void
+         */
         void replace(grid_entity &grid)
         {
             for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
@@ -257,6 +334,12 @@ class blocks_entity
         }
 };
 
+/**
+ * Randomly Generates a block
+ * 
+ * @param void 
+ * @return void
+ */
 blocks_entity random_block();
 
 #endif
