@@ -342,6 +342,12 @@ class blocks_entity
  */
 void random_block_series(uint8_t series[NUM_OF_BLOCKS]);
 
+/**
+ * Converts the series blocks IDs to the actual blocks entities
+ * 
+ * @param id The id of the block according to the defined enum (0-6)
+ * @return blocks_entity The block that corresponds to the id provided
+ */
 blocks_entity convert_series_to_block(uint8_t id);
 
 #endif
