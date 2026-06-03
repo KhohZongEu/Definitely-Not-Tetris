@@ -103,7 +103,7 @@ class blocks_entity
             this->colour = colour;
             middle = mid;
 
-            for (int row = 0; row < HIT_BOX_SIZE; row++)
+            for (uint8_t row = 0; row < HIT_BOX_SIZE; row++)
             {
                 this->hit_box[row] = hit_box[row];
             }
@@ -288,7 +288,7 @@ class blocks_entity
          * @param mid The location of the rotation point of the block
          * @return void
          */
-        void update_type(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
+        void update(box_shapes shape, colours colour, const points_2d hit_box[HIT_BOX_SIZE], const points_2d mid)
         {
             this->shape = shape;
             this->colour = colour;
@@ -334,12 +334,22 @@ class blocks_entity
         }
 };
 
+// /**
+//  * Randomly Generates a block
+//  * 
+//  * @param void 
+//  * @return void
+//  */
+// blocks_entity random_block();
+
 /**
- * Randomly Generates a block
+ * Generates a random series of the blocks
  * 
- * @param void 
+ * @param &series The reference to the array the that stores the series 
  * @return void
  */
-blocks_entity random_block();
+void random_block_series(uint8_t series[NUM_OF_BLOCKS]);
+
+blocks_entity convert_series_to_block(uint8_t id);
 
 #endif

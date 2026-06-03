@@ -4,18 +4,19 @@
 #include "graphics.h"
 #include "grid.h"
 #include "blocks.h"
+#include "constants.h"
 class game_entity
 {
     private:
         uint8_t offset_x;
         uint8_t offset_y;
-        blocks_entity blocks[4];
+        blocks_entity blocks[NUM_OF_BLOCKS];
         grid_entity grid;
         uint8_t current_block;
 
         points_2d score_point;
         uint8_t full_row_tracker;
-        const char score_header[8] = "Score: ";
+        const char score_header[7] = "Score:";
         char score_val_string[10] = "";
         
         const uint8_t SIDE_DELAY = 100;
@@ -23,6 +24,9 @@ class game_entity
         
         unsigned long last_side_movement = 0;
         unsigned long last_down_movement = 0;
+
+        bool randomized = false;
+        uint8_t blocks_sequence[NUM_OF_BLOCKS];
 
         /**
          * Calculates the score from a line clear
@@ -79,18 +83,31 @@ class game_entity
         }
 
         /**
-         * Resets a block in the array after it has been locked to the grid
+         * Randomizes the blocks sequence
          * 
          * @param void
          * @return void
          */
-        void reset_blocks()
+        void randomize_blocks()
         {
-            for (uint8_t i = 0; i < 4; i++)
+            random_block_series(blocks_sequence);
+
+            for (uint8_t i = 0; i < NUM_OF_BLOCKS; i++)
             {
-                blocks[i] = random_block();
+                blocks[i] = convert_series_to_block(blocks_sequence[i]);
             }
-            current_block = 0;
+        }
+
+        /**
+         * Update the next blocks when the game is running
+         * 
+         * @param void
+         * @return void
+         */
+        void update_next_blocks()
+        {
+            uint8_t update_index = (current_block + 5) % NUM_OF_BLOCKS;
+            blocks[update_index] = convert_series_to_block(blocks_sequence[update_index]);
         }
     
     public:
@@ -113,7 +130,13 @@ class game_entity
             this->offset_y = offset_y;
             this->grid = grid_entity(offset_x, offset_y); 
 
-            reset_blocks();
+            for (uint8_t i = 0; i < NUM_OF_BLOCKS; i++)
+            {
+                blocks_sequence[i] = i;
+            }
+
+            randomize_blocks();
+            current_block = 0;
             
             score = 0;
 
@@ -148,7 +171,7 @@ class game_entity
         void reset()
         {
             clear_screen();
-            reset_blocks();
+            randomize_blocks();
             score = 0;
             init_render();
             grid.reset();
@@ -220,12 +243,13 @@ class game_entity
                     
                     current_block++;
 
-                    blocks[current_block - 1] = random_block();
+                    update_next_blocks();
                 }
                 
-                if (current_block >= 4)
+                if (current_block >= NUM_OF_BLOCKS)
                 {
                     current_block = 0;
+                    randomized = false;
                 }
 
                 uint8_t full_rows = grid.check_rows();
@@ -236,7 +260,14 @@ class game_entity
                     full_row_tracker += full_rows;
                     update_visual_score(score_point, score_val_string, score);
                 }
+
                 last_down_movement = millis();
+            }
+
+            if (current_block == 2 && randomized == false)
+            {
+                random_block_series(blocks_sequence);
+                randomized = true;
             }
 
             if (full_row_tracker >= 10 && down_delay > 50)

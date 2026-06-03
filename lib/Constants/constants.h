@@ -5,8 +5,8 @@
 
 struct points_2d
 {
-    uint16_t x;
-    uint16_t y;
+    uint8_t x;
+    uint8_t y;
 };
 
 struct vector_2d
@@ -41,6 +41,8 @@ const colours COLOUR_RED = {0xFF, 0x00, 0x00};
 const colours COLOUR_PURPLE = {0x4B, 0x00, 0x82};
 
 const uint8_t HIT_BOX_SIZE = 4;
+
+const uint8_t NUM_OF_BLOCKS = 7;
 
 /*
 Defines a transformation matrix

@@ -9,7 +9,7 @@ points_2d transform(points_2d points)
     return new_point;
 }
 
-void render_rect(points_2d points, int width, int height, const colours &colour)
+void render_rect(points_2d points, uint8_t width, uint8_t height, const colours &colour)
 {
     points.y += height; // The + CELL_SIZE is needed at the index is not the same
     points_2d actual_points = transform(points);

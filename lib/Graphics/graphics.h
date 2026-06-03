@@ -24,7 +24,7 @@ points_2d transform(points_2d points);
  * @param colour The colour of the rectangle
  * @return void
  */
-void render_rect(points_2d points, int width, int height, const colours &colour);
+void render_rect(points_2d points, uint8_t width, uint8_t height, const colours &colour);
 
 /**
  * Renders a line
