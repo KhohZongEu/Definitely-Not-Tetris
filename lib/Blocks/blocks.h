@@ -334,14 +334,6 @@ class blocks_entity
         }
 };
 
-// /**
-//  * Randomly Generates a block
-//  * 
-//  * @param void 
-//  * @return void
-//  */
-// blocks_entity random_block();
-
 /**
  * Generates a random series of the blocks
  * 
